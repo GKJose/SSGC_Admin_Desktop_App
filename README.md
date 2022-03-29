@@ -8,7 +8,7 @@
 ## Run the react app
 ### 'npm start'
 ## Run the electron app
-### 'npm electron-dev'
+### 'npm 'dev'
 
 
 
