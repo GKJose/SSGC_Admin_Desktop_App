@@ -1,3 +1,18 @@
+# To setup the project
+## Download the repo 
+### 'git clone https://github.com/GKJose/SSGC_Admin_Desktop_App.git
+## Install Electron
+### 'npm i electron'
+
+# To run the application
+## Run the react app
+### 'npm start'
+## Run the electron app
+### 'npm electron-dev'
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
