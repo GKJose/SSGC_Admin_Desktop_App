@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/GKJose/SSGC_Admin_Desktop_App/issues"
   },
-  "homepage": "https://github.com/GKJose/SSGC_Admin_Desktop_App#readme"
+  "homepage": "https://github.com/GKJose/SSGC_Admin_Desktop_App#readme",
+  "dependencies": {
+    "electron": "^17.3.0"
+  }
 }
