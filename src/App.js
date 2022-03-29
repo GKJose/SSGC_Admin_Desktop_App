@@ -1,10 +1,8 @@
 import React from 'react';
-import './App.css';
-const {ipcRender} = window.require('electron');
-
-
 import logo from './logo.svg';
 import './App.css';
+
+const {ipcRender} = window.require('electron');
 
 function App() {
   return (
