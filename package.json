@@ -1,0 +1,19 @@
+{
+  "name": "desktop-application",
+  "version": "1.0.0",
+  "description": "Smart Symbolic Graphing Calculator Admin Desktop Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GKJose/SSGC_Admin_Desktop_App.git"
+  },
+  "author": "UHCL Group 2",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GKJose/SSGC_Admin_Desktop_App/issues"
+  },
+  "homepage": "https://github.com/GKJose/SSGC_Admin_Desktop_App#readme"
+}
