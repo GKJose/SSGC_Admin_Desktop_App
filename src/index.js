@@ -1,15 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter} from "react-router-dom";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const electron = window.require('electron');
+const ipcRenderer = electron.ipcRenderer;
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+  <App />
+</BrowserRouter>,
   document.getElementById('root')
 );
+ipcRenderer.on('will-navigate',(event,data) =>{
+  window.
+  console.log(data);
+});
+ipcRenderer.on('change-theme',(event,data) =>{
+  console.log(data);
+});
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

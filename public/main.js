@@ -2,8 +2,11 @@
 const electron = require("electron");
 const url = require("url");
 const path = require("path");
+const Store = require('electron-store');
+const prompt = require('electron-prompt');
+const {app, BrowserWindow,Menu,ipcMain,dialog} = electron;
 
-const {app, BrowserWindow,Menu,ipcMain} = electron;
+const store = new Store();
 
 //Static Variable Declarations
 let mainWindow;
@@ -12,13 +15,22 @@ let listeningPort = 6969;
 
 //Listen for app to be ready
 app.on('ready', function(){
-    mainWindow = new BrowserWindow({});
+    mainWindow = new BrowserWindow({show: false,webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+    }});
     //Load html into window
     mainWindow.loadURL('http://localhost:3000');
     //Build menu from template
     const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
     //Insert menu
     Menu.setApplicationMenu(mainMenu);
+    //Set initial theme
+    store.set("settings.theme","light");
+    mainWindow.webContents.on('did-finish-load',() =>{
+        mainWindow.show();
+        mainWindow.webContents.send("change-theme",store.get("settings.theme"));
+    });
 });
 
 //Set the minimum/maximum size of the application
@@ -51,26 +63,31 @@ const mainMenuTemplate = [
         submenu:[
             {
                 label:'Search for Calculator(s)',
-                click(){
+                click(){ 
+                mainWindow.webContents
+                .send('will-navigate','/');
 
                 }
             },
             {
                 label:'Restrict Permissions',
                 click(){
-
+                    mainWindow.webContents
+                    .send('will-navigate','/restrictPermissions');
                 }
             },
             {
                 label:'Remote View Calculator(s)',
                 click(){
-
+                    mainWindow.webContents
+                    .send('will-navigate','/remoteViewCalculators'); 
                 }
             },
             {
                 label:'Record Input/Output of Calculator(s)',
                 click(){
-
+                    mainWindow.webContents
+                    .send('will-navigate','/recordIO');
                 }
             }
         ]
@@ -79,18 +96,29 @@ const mainMenuTemplate = [
         label:'View',
         submenu:[
             {
-                label:'Fullscreen Mode',
+                label:'Toggle Fullscreen Mode',
                 accelerator: process.platform == 'darwin' ? 'Command+F':'Ctrl+F',
                 click(){
-                    if(mainWindow.isMaximized() == false){
+                    if(!mainWindow.isMaximized()){
                         mainWindow.maximize();
                         mainWindow.show();
-                        console.log("FS Toggled!");
                     }else{
                         mainWindow.minimize();
                         mainWindow.show();
-                        console.log("FS UnToggled!");
                     }
+                }
+            },
+            {
+                label:'Toggle Dark Theme',
+                click(){
+                    if(store.get("settings.theme") == "light"){
+                        store.set("settings.theme","dark");
+                    }else{
+                        store.set("settings.theme","light")
+                    }
+                    mainWindow.webContents.on('did-finish-load',() =>{
+                        mainWindow.webContents.send("change-theme",store.get("settings.theme"));
+                    });
                 }
             }
         ]
@@ -101,7 +129,23 @@ const mainMenuTemplate = [
             {
                 label:'Change Name Broadcasted',
                 click(){
-
+                    prompt({
+                        title: 'Change Name Broadcasted',
+                        label: 'Name:',
+                        value: store.get("admin.name"),
+                        inputAttrs: {
+                            type: 'text'
+                        },
+                        type: 'input'
+                    })
+                    .then((r) => {
+                        if(r === null) {
+  
+                        } else {
+                            store.set("admin.name",r);
+                        }
+                    })
+                    .catch(console.error);
                 }
             }
         ]
@@ -112,23 +156,27 @@ const mainMenuTemplate = [
             {
                 label:'Getting Started',
                 click(){
-                    //Open a new window
-                }
+                    mainWindow.webContents.on('did-finish-load', () => {
+                        mainWindow.webContents.send('change-page', "/gettingStarted");
+                      });  
+                }                 
             },
             {
                 label:'Check for Updates',
                 click(){
-
+                    mainWindow.webContents.on('did-finish-load', () => {
+                        mainWindow.webContents.send('change-page', "/checkForUpdates");
+                      });  
                 }
             },
-
             {
                 label:'About Us',
                 click(){
-                    //Open a new window.
+                    mainWindow.webContents.on('did-finish-load', () => {
+                        mainWindow.webContents.send('change-page', "/aboutUs");
+                      });  
                 }
             }
-
         ]
     }
 ];
@@ -146,3 +194,4 @@ if(process.env.NODE_ENV !== 'production'){
         ]
     });
 }
+

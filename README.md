@@ -3,6 +3,8 @@
 ### 'git clone https://github.com/GKJose/SSGC_Admin_Desktop_App.git
 ## Install Electron
 ### 'npm i electron'
+### 'npm install electron-store'
+### npm install electron-prompt --save
 
 # To run the application
 ## Run the react app
