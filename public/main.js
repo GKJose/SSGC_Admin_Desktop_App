@@ -65,7 +65,7 @@ const mainMenuTemplate = [
                 label:'Search for Calculator(s)',
                 click(){ 
                 mainWindow.webContents
-                .send('will-navigate','/');
+                .send('navigate','routes/searchForCalculators');
 
                 }
             },
@@ -73,21 +73,21 @@ const mainMenuTemplate = [
                 label:'Restrict Permissions',
                 click(){
                     mainWindow.webContents
-                    .send('will-navigate','/restrictPermissions');
+                    .send('navigate','routes/restrictPermissions');
                 }
             },
             {
                 label:'Remote View Calculator(s)',
                 click(){
                     mainWindow.webContents
-                    .send('will-navigate','/remoteViewCalculators'); 
+                    .send('navigate','routes/remoteViewCalculators'); 
                 }
             },
             {
                 label:'Record Input/Output of Calculator(s)',
                 click(){
                     mainWindow.webContents
-                    .send('will-navigate','/recordIO');
+                    .send('navigate','routes/recordIO');
                 }
             }
         ]
@@ -116,9 +116,9 @@ const mainMenuTemplate = [
                     }else{
                         store.set("settings.theme","light")
                     }
-                    mainWindow.webContents.on('did-finish-load',() =>{
-                        mainWindow.webContents.send("change-theme",store.get("settings.theme"));
-                    });
+                    
+                    mainWindow.webContents.send("change-theme",store.get("settings.theme"));
+                    
                 }
             }
         ]
@@ -156,25 +156,25 @@ const mainMenuTemplate = [
             {
                 label:'Getting Started',
                 click(){
-                    mainWindow.webContents.on('did-finish-load', () => {
-                        mainWindow.webContents.send('change-page', "/gettingStarted");
-                      });  
+                    
+                    mainWindow.webContents.send('navigate', "routes/gettingStarted");
+                        
                 }                 
             },
             {
                 label:'Check for Updates',
                 click(){
-                    mainWindow.webContents.on('did-finish-load', () => {
-                        mainWindow.webContents.send('change-page', "/checkForUpdates");
-                      });  
+                    
+                    mainWindow.webContents.send('navigate', "routes/checkForUpdates");
+                        
                 }
             },
             {
                 label:'About Us',
                 click(){
-                    mainWindow.webContents.on('did-finish-load', () => {
-                        mainWindow.webContents.send('change-page', "/aboutUs");
-                      });  
+                    
+                    mainWindow.webContents.send('navigate', "routes/aboutUs");
+                      
                 }
             }
         ]

@@ -1,8 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
+import { useNavigate } from "react-router-dom";
+
+const electron = window.require('electron');
+const ipcRenderer = electron.ipcRenderer;
 
 function App() {
-
+  const navigate = useNavigate();
+  ipcRenderer.on('navigate',(event,data) =>{
+    navigate(data);
+    console.log(data);
+    return;
+    
+  });
+  ipcRenderer.on('change-theme',(event,data) =>{
+    console.log(data);
+  });
   return (
     <div className="App">
       <header className="App-header">
