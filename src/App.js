@@ -6,18 +6,17 @@ const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
 function App() {
+  let theme = "light";
   const navigate = useNavigate();
   ipcRenderer.on('navigate',(event,data) =>{
-    navigate(data);
-    console.log(data);
-    return;
-    
+    navigate(data); 
   });
   ipcRenderer.on('change-theme',(event,data) =>{
-    console.log(data);
+    theme = data;
+    console.log(theme);
   });
   return (
-    <div className="App">
+    <div className="App" data-theme ={theme}>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>

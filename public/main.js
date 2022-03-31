@@ -27,13 +27,15 @@ app.on('ready', function(){
     //Insert menu
     Menu.setApplicationMenu(mainMenu);
     //Set initial theme
-    store.set("settings.theme","light");
+    store.set("settings.theme",'light');
     mainWindow.webContents.on('did-finish-load',() =>{
         mainWindow.show();
         mainWindow.webContents.send("change-theme",store.get("settings.theme"));
     });
     jsonHandler = new JHandler(mainWindow);
     jsonHandler.handleConnection();
+
+    console.log(mainWindow.webContents.id);
 });
 
 //Set the minimum/maximum size of the application
@@ -115,10 +117,10 @@ const mainMenuTemplate = [
             {
                 label:'Toggle Dark Theme',
                 click(){
-                    if(store.get("settings.theme") == "light"){
-                        store.set("settings.theme","dark");
+                    if(store.get("settings.theme") == 'light'){
+                        store.set("settings.theme",'dark');
                     }else{
-                        store.set("settings.theme","light")
+                        store.set("settings.theme",'light')
                     }
                     
                     mainWindow.webContents.send("change-theme",store.get("settings.theme"));
