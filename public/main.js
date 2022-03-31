@@ -4,20 +4,21 @@ const url = require("url");
 const path = require("path");
 const Store = require('electron-store');
 const prompt = require('electron-prompt');
-const {app, BrowserWindow,Menu,ipcMain,dialog} = electron;
+const JHandler = require("./json-handler");
+const {app, BrowserWindow,Menu,ipcMain} = electron;
 
 const store = new Store();
 
 //Static Variable Declarations
 let mainWindow;
-let BroadcastedName = "";
-let listeningPort = 6969;
+let jsonHandler;
+
 
 //Listen for app to be ready
 app.on('ready', function(){
     mainWindow = new BrowserWindow({show: false,webPreferences: {
         nodeIntegration: true,
-        contextIsolation: false,
+        contextIsolation: false
     }});
     //Load html into window
     mainWindow.loadURL('http://localhost:3000');
@@ -31,6 +32,8 @@ app.on('ready', function(){
         mainWindow.show();
         mainWindow.webContents.send("change-theme",store.get("settings.theme"));
     });
+    jsonHandler = new JHandler(mainWindow);
+    jsonHandler.handleConnection();
 });
 
 //Set the minimum/maximum size of the application
@@ -41,6 +44,7 @@ mainWindow.setResizable(false);
 mainWindow.setMaximumSize(maxWidth, maxHeight);
 mainWindow.setMinimumSize(800,620);
 mainWindow.minimize();
+
 }
 
 //Create menu template
@@ -64,30 +68,30 @@ const mainMenuTemplate = [
             {
                 label:'Search for Calculator(s)',
                 click(){ 
-                mainWindow.webContents
-                .send('navigate','routes/searchForCalculators');
-
+                    mainWindow.webContents
+                        .send('navigate','routes/searchForCalculators');
                 }
+
             },
             {
                 label:'Restrict Permissions',
                 click(){
                     mainWindow.webContents
-                    .send('navigate','routes/restrictPermissions');
+                        .send('navigate','routes/restrictPermissions');
                 }
             },
             {
                 label:'Remote View Calculator(s)',
                 click(){
                     mainWindow.webContents
-                    .send('navigate','routes/remoteViewCalculators'); 
+                        .send('navigate','routes/remoteViewCalculators'); 
                 }
             },
             {
                 label:'Record Input/Output of Calculator(s)',
                 click(){
                     mainWindow.webContents
-                    .send('navigate','routes/recordIO');
+                        .send('navigate','routes/recordIO');
                 }
             }
         ]
@@ -181,6 +185,7 @@ const mainMenuTemplate = [
     }
 ];
 
+//Toggle dev tools if in development
 if(process.env.NODE_ENV !== 'production'){
     mainMenuTemplate.push({
         label: 'Developer Tools',

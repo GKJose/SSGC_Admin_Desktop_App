@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter,Route,Routes} from "react-router-dom";
 import './index.css';
 
+import App from './App'
 import AboutUs from './routes/aboutUs';
 import CheckForUpdates from './routes/checkForUpdates'
 import GettingStarted from './routes/gettingStarted'
