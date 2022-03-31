@@ -184,7 +184,9 @@ const mainMenuTemplate = [
         ]
     }
 ];
-
+ipcMain.on("sendPermissions",(event,data)=>{
+    jsonHandler.sendJSONToClients(data);
+});
 //Toggle dev tools if in development
 if(process.env.NODE_ENV !== 'production'){
     mainMenuTemplate.push({

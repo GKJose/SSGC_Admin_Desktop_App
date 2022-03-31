@@ -9,8 +9,6 @@ const schema_connectionRequest = require("../src/schemas/connectionRequest.schem
 const schema_connectionRevoke = require("../src/schemas/connectionRevoke.schema.json");
 const schema_ssgcData = require("../src/schemas/ssgcData.schema.json");
 
-const ipcMain  = electron;
-
 const serverPort = 6969;
 
 
@@ -78,7 +76,7 @@ class JsonHandler{
         //Iterate through every client stored, and send them a message
         for(var i = 0; i < this.clients.length; i++){
             //Send them a message only if the client is actively open.
-            if(this.clients[i].readyState === WebSocket.OPEN ){
+            if(this.clients[i].readyState === WebSocketServer.OPEN ){
                 this.clients[i].send(JSON.stringify(jsonObject));
             }
         }
