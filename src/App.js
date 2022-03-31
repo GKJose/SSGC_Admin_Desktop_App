@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import logo from './assets/University_of_Houston-Clear_Lake_seal.svg.png';
 import './App.css';
 import { useNavigate } from "react-router-dom";
 
@@ -21,15 +21,15 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Welcome to UHCL's Smart Symbolic Graphing Calculator Administrator App!
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://github.com/UHCL-Senior-Projects"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Click here to visit our Github Repo
         </a>
       </header>
     </div>
