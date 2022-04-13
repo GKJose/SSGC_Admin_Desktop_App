@@ -1,9 +1,8 @@
+import React from 'react';
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
-
-
-let permissionsJSON = {
+  let permissionsJSON = {
   
   "ssgcType":"connectionPermissionReply",
   "permissions":{
@@ -32,7 +31,8 @@ let permissionsJSON = {
 
 }
 
-export default function RestrictPermissions() {
+class restrictPermissions extends React.Component{
+  render(){
     const clickedCheckBox = (e) =>{
       switch(e.target.id){
         case "Functions":
@@ -105,4 +105,6 @@ export default function RestrictPermissions() {
           <button id = "submit" type = "button" onClick={(e)=>{sendPermissionsToClients(e)}}>Send Permissions to all Clients</button>
         </main>
       );
+    }
 }
+export default restrictPermissions;
