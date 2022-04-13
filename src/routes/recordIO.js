@@ -1,11 +1,17 @@
-import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-const electron = window.require("electron");
+import React,{ useState } from "react";
+const electron= window.require("electron");
 const ipcRenderer = electron.ipcRenderer;
 
 const columnNames = ["Log Type","Client IP","Client Name","Data"];
 const clientLogs = [];
+
+function useForceUpdate(){
+  const [value,setValue] = useState(0);
+  return () => setValue((value) => value + 1);
+}
+
 export default function RecordIO() {
+  const forceUpdate = useForceUpdate();
   let table = document.createElement("table");
   let trow = table.insertRow(-1);
   for(var i = 0; i < columnNames.length; i++){
@@ -15,10 +21,9 @@ export default function RecordIO() {
   }
 
   ipcRenderer.on("clientLog",(event,data) => {
-    console.log("Client log json obj rec'd by renderer process.");
-    console.log(data);
     clientLogs.push(data);
   });
+  
   for(i = 0; i < clientLogs.length; i++){
     var clientLog = clientLogs[i];
     console.log(clientLog);
@@ -42,6 +47,7 @@ export default function RecordIO() {
     return (
         <main style={{ padding: "1rem 0" }}>
           <h2>Record I/O</h2>
+          <button type="button" onClick={forceUpdate}>Refresh page</button>
           <table id="table" align = "center" border="1px"></table>
         </main>
       );

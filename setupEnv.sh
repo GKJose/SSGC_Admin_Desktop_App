@@ -1,1 +1,1 @@
-npm install electron electron-prompt electron-store react react-dom react-router-dom react-scripts web-vitals concurrently wait-on ws ajv--save
+npm install electron electron-prompt electron-store react react-dom react-router-dom react-scripts web-vitals concurrently wait-on ws ajv imagemagick --save

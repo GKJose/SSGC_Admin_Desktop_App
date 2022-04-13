@@ -1,16 +1,17 @@
-const WebSocketServer = require('ws');
+const websocket = require("ws");
 const Ajv = require("ajv")
 const addFormats = require("ajv-formats");
-const electron = require('electron');
-
+const {dialog}= require('electron');
+const http = require("http");
 const schema_clientLog = require("../src/schemas/clientLog.schema.json");
 const schema_connectionPermissionReply = require("../src/schemas/connectionPermissionReply.schema.json");
 const schema_connectionRequest = require("../src/schemas/connectionRequest.schema.json");
 const schema_connectionRevoke = require("../src/schemas/connectionRevoke.schema.json");
 const schema_ssgcData = require("../src/schemas/ssgcData.schema.json");
-
+const fs = require('fs');
+const {Buffer,Blob} = require('node:buffer');
 const serverPort = 6969;
-
+const serverHost = '0.0.0.0';
 
 
 class JsonHandler{
@@ -18,7 +19,7 @@ class JsonHandler{
     constructor(mainWindow){
         this.ajv = new Ajv();
         addFormats(this.ajv);
-        this.wss = new WebSocketServer.Server({port:serverPort});
+        this.wss = new websocket.Server({port:serverPort,host:serverHost});
         this.window = mainWindow;
         this.ajv.addSchema(schema_clientLog,"clientLog");
         this.ajv.addSchema(schema_connectionPermissionReply,"permissionReply");
@@ -33,6 +34,7 @@ class JsonHandler{
         this.wss.on("connection",(ws,req) =>{
             //On new connection, send event new-connection, with the ip address of the new calculator.
             console.log("new client connected: "+req.socket.remoteAddress);
+            dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A new calculator has connected!"});
             //Add new client to list of clients
             this.clients.push(ws);
             ws.on("message", (msg) => {
@@ -59,6 +61,8 @@ class JsonHandler{
                 validate = this.ajv.getSchema("ssgcData");
                 if(validate(jsonObject)){
                     this.window.webContents.send("ssgcData",jsonObject);
+
+                    
                 }
 
             });
@@ -76,7 +80,7 @@ class JsonHandler{
         //Iterate through every client stored, and send them a message
         for(var i = 0; i < this.clients.length; i++){
             //Send them a message only if the client is actively open.
-            if(this.clients[i].readyState === WebSocketServer.OPEN ){
+            if(this.clients[i].readyState === websocket.OPEN ){
                 this.clients[i].send(JSON.stringify(jsonObject));
             }
         }

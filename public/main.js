@@ -35,7 +35,6 @@ app.on('ready', function(){
     jsonHandler = new JHandler(mainWindow);
     jsonHandler.handleConnection();
 
-    console.log(mainWindow.webContents.id);
 });
 
 //Set the minimum/maximum size of the application
