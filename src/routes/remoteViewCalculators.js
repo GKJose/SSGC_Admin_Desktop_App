@@ -9,42 +9,37 @@ export default function RemoteViewCalculators() {
 */
 
 import React from 'react';
-
+import RemoteViewCalculator from '../components/remoteViewCalculator';
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
-class remoteViewCalculators extends React.Component{
-  
-  render(){
-    let image = new Image();
-    let buffer;
-    let imageLoaded = false;
-    let blob;
-    ipcRenderer.on("ssgcData",(event,jsonObject)=>{
-      imageLoaded = true;
-      buffer = Buffer.from(jsonObject.data,"base64");
-      blob = new Blob(buffer);
-      image.src = URL.createObjectURL(blob);
-      if(this.componentDidMount){
-        document.getElementById("screenshot").src = image.src
-        this.forceUpdate();
+class RemoteViewCalculators extends React.Component{
+  constructor(props){
+    super(props);
+    this.clients = [];
+    this.children = [];
+    ipcRenderer.on("ssgcData",(event,data)=>{
+     
+      for(var i=0; i<this.clients.length;i++){
+        if(this.clients[i] === data.clientIP) return;
       }
-      
-    });
-    if(imageLoaded){
+      this.clients.push(data.clientIP);
+      this.children.push(<RemoteViewCalculator key = {this.clients[i]} clientIP ={this.clients[i]}></RemoteViewCalculator>);
+      this.forceUpdate();
+  });
+
+}
+componentDidUpdate(){
+}
+componentDidMount(){
+}
+  render(){
+    console.log(this.children.length);
     return(
-      <main style={{ padding: "1rem 0" }}>
-          <h2>Remote View Calculators</h2>
-          <img id ="screenshot" src=""/>
-        </main>
-      );
-    }else{
-      return(
-      <main style={{ padding: "1rem 0" }}>
-      <h2>Remote View Calculators</h2>
-    </main>);
-    }
+      [<h1 key="h1">Remote View Calculators</h1>,<div key="remoteViews">{this.children}</div>]
+    );
   }
 }
 
-export default remoteViewCalculators;
+
+export default RemoteViewCalculators;

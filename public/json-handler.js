@@ -9,7 +9,7 @@ const schema_connectionRequest = require("../src/schemas/connectionRequest.schem
 const schema_connectionRevoke = require("../src/schemas/connectionRevoke.schema.json");
 const schema_ssgcData = require("../src/schemas/ssgcData.schema.json");
 const fs = require('fs');
-const {Buffer,Blob} = require('node:buffer');
+const {Buffer,Blob} = require('buffer');
 const serverPort = 6969;
 const serverHost = '0.0.0.0';
 
@@ -61,7 +61,7 @@ class JsonHandler{
                 validate = this.ajv.getSchema("ssgcData");
                 if(validate(jsonObject)){
                     this.window.webContents.send("ssgcData",jsonObject);
-
+                  
                     
                 }
 
@@ -71,8 +71,8 @@ class JsonHandler{
                 console.log("the client has disconnected");
             });
             // handling client connection error
-            ws.onerror = function () {
-                console.log("Some Error occurred");
+            ws.onerror = function (event) {
+                console.log("Some Error occurred: code: "+event.code);
             }
         });     
     }
