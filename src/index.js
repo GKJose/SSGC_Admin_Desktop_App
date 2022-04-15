@@ -16,22 +16,22 @@ const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 let theme = "light";
 let lightPaths = [
-  <Route path = "/" element = {<App theme = "light"/>}/>,
-  <Route path = "/routes/aboutUs" element = {<AboutUs theme = "light" />}/>,
-  <Route path = "/routes/checkForUpdates" element = {<CheckForUpdates theme = "light" />}/>,
-  <Route path = "/routes/gettingStarted" element = {<GettingStarted theme = "light"/>}/>,
-  <Route path = "/routes/recordIO" element = {<RecordIO theme = "light"/>}/>,
-  <Route path = "/routes/remoteViewCalculators" element = {<RemoteViewCalculators theme = "light"/>}/>,
-  <Route path = "/routes/restrictPermissions" element = {<RestrictPermissions theme = "light"/>}/>    
+  <Route path = "/" element = {<App key = "App" theme = "light"/>}/>,
+  <Route path = "/routes/aboutUs" element = {<AboutUs key = "AboutUs" theme = "light" />}/>,
+  <Route path = "/routes/checkForUpdates" element = {<CheckForUpdates key = "CheckForUpdates" theme = "light" />}/>,
+  <Route path = "/routes/gettingStarted" element = {<GettingStarted key = "GettingStarted" theme = "light"/>}/>,
+  <Route path = "/routes/recordIO" element = {<RecordIO key = "RecordIO" theme = "light"/>}/>,
+  <Route path = "/routes/remoteViewCalculators" element = {<RemoteViewCalculators key = "RemoteViewCalculators" theme = "light"/>}/>,
+  <Route path = "/routes/restrictPermissions" element = {<RestrictPermissions key = "RestrictPermissions"  theme = "light"/>}/>    
 ]
 let darkPaths = [
-  <Route path = "/" element = {<App theme = "dark"/>}/>,
-  <Route path = "/routes/aboutUs" element = {<AboutUs theme = "dark" />}/>,
-  <Route path = "/routes/checkForUpdates" element = {<CheckForUpdates theme = "dark" />}/>,
-  <Route path = "/routes/gettingStarted" element = {<GettingStarted theme = "dark"/>}/>,
-  <Route path = "/routes/recordIO" element = {<RecordIO theme = "dark"/>}/>,
-  <Route path = "/routes/remoteViewCalculators" element = {<RemoteViewCalculators theme = "dark"/>}/>,
-  <Route path = "/routes/restrictPermissions" element = {<RestrictPermissions theme = "dark"/>}/>    
+  <Route path = "/" element = {<App key = "App" theme = "dark"/>}/>,
+  <Route path = "/routes/aboutUs" element = {<AboutUs key = "AboutUs" theme = "dark" />}/>,
+  <Route path = "/routes/checkForUpdates" element = {<CheckForUpdates key = "CheckForUpdates" theme = "dark" />}/>,
+  <Route path = "/routes/gettingStarted" element = {<GettingStarted key = "GettingStarted" theme = "dark"/>}/>,
+  <Route path = "/routes/recordIO" element = {<RecordIO key = "RecordIO" theme = "dark"/>}/>,
+  <Route path = "/routes/remoteViewCalculators" element = {<RemoteViewCalculators key = "RemoteViewCalculators" theme = "dark"/>}/>,
+  <Route path = "/routes/restrictPermissions" element = {<RestrictPermissions key = "RestrictPermissions" theme = "dark"/>}/>    
 ]
 ipcRenderer.on('change-theme',(event,data) =>{
   theme = data;
