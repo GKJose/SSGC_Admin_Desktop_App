@@ -64,32 +64,30 @@ const mainMenuTemplate = [
 
     },
     {
-        label:'Options',
+        label:'Navigation',
         submenu:[
             {
-                label:'Search for Calculator(s)',
-                click(){ 
-                    mainWindow.webContents
-                        .send('navigate','routes/searchForCalculators');
+                label:'Home Page',
+                click(){
+                    mainWindow.webContents.send('navigate','/');
                 }
-
             },
             {
-                label:'Restrict Permissions',
+                label:'Restrict Permissions Page',
                 click(){
                     mainWindow.webContents
                         .send('navigate','routes/restrictPermissions');
                 }
             },
             {
-                label:'Remote View Calculator(s)',
+                label:'Remote View Calculator(s) Page',
                 click(){
                     mainWindow.webContents
                         .send('navigate','routes/remoteViewCalculators'); 
                 }
             },
             {
-                label:'Record Input/Output of Calculator(s)',
+                label:'View Input/Output of Calculator(s) Page',
                 click(){
                     mainWindow.webContents
                         .send('navigate','routes/recordIO');

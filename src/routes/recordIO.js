@@ -10,8 +10,7 @@ function useForceUpdate(){
   return () => setValue((value) => value + 1);
 }
 
-export default function RecordIO() {
-  const forceUpdate = useForceUpdate();
+export default function RecordIO(props) {
   let table = document.createElement("table");
   let trow = table.insertRow(-1);
   for(var i = 0; i < columnNames.length; i++){
@@ -45,10 +44,10 @@ export default function RecordIO() {
   });
 
     return (
-        <main style={{ padding: "1rem 0" }}>
+        <div className='recordIO' data-theme ={props.theme}>
           <h2>Record I/O</h2>
-          <button type="button" onClick={forceUpdate}>Refresh page</button>
+          <button type="button" onClick={useForceUpdate}>Refresh page</button>
           <table id="table" align = "center" border="1px"></table>
-        </main>
+        </div>
       );
 }

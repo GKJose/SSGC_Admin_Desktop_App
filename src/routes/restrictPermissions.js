@@ -1,4 +1,5 @@
-import React from 'react';
+import './routes.css';
+import React from "react";
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -32,6 +33,10 @@ const ipcRenderer = electron.ipcRenderer;
 }
 
 class restrictPermissions extends React.Component{
+  constructor(props){
+    super(props);
+   
+  }
   render(){
     const clickedCheckBox = (e) =>{
       switch(e.target.id){
@@ -63,7 +68,7 @@ class restrictPermissions extends React.Component{
       
     };
     return (
-        <main style={{ padding: "1rem 0" }}>
+        <div className='gettingStarted' data-theme ={this.props.theme}>
           <h2>Restrict Permissions</h2>
           <table>
             <thead>
@@ -103,7 +108,7 @@ class restrictPermissions extends React.Component{
           </tbody>
           </table>
           <button id = "submit" type = "button" onClick={(e)=>{sendPermissionsToClients(e)}}>Send Permissions to all Clients</button>
-        </main>
+        </div>
       );
     }
 }

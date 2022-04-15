@@ -8,15 +8,21 @@ export default function GettingStarted() {
 }
 */
 
-import { render } from "@testing-library/react";
-import React from 'react';
+import './routes.css';
+import React from "react";
+const ipcRenderer = window.require("electron").ipcRenderer;
 
 class gettingStarted extends React.Component{
+  constructor(props){
+    super(props);
+
+  }
+
   render(){
     return(
-      <main style={{ padding: "1rem 0" }}>
+      <div className='gettingStarted' data-theme ={this.props.theme}>
           <h2>Getting Started</h2>
-        </main>
+        </div>
       );
   }
 }

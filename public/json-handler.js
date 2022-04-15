@@ -32,8 +32,6 @@ class JsonHandler{
     handleConnection(){
 
         this.wss.on("connection",(ws,req) =>{
-            //On new connection, send event new-connection, with the ip address of the new calculator.
-            console.log("new client connected: "+req.socket.remoteAddress);
             dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A new calculator has connected!"});
             //Add new client to list of clients
             this.clients.push(ws);
@@ -68,7 +66,8 @@ class JsonHandler{
             });
             // handling what to do when clients disconnects from server
             ws.on("close", () => {
-                console.log("the client has disconnected");
+                dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A calculator has disconnected! IP:"});
+                this.window.webContents.send("clientDisconnected",req.socket.remoteAddress);
             });
             // handling client connection error
             ws.onerror = function (event) {

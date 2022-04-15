@@ -18,7 +18,7 @@ code {
   --accent: purple;
 }
 [data-theme='dark'] {
-  --background: black;
+  --background: rgb(37, 38, 43);
   --text-primary: white;
   --text-secondary: grey;
   --accent: darkred;

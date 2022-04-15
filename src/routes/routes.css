@@ -1,0 +1,82 @@
+.AboutUs {
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s
+  }
+  .checkForUpdates {
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s
+  }
+  .gettingStarted {
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s
+  }
+  .recordIO {
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s
+  }
+  .remoteViewCalculators{
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s
+  }
+  .restrictPermissions {
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s
+  }
+  .remoteView{
+    text-align: center;
+    color: var(--text-primary);
+    background-color: var(--background);
+    font-size: large;
+    font-weight: bold;
+    padding: 20px;
+    height: calc(100vh - 40px);
+    transition: all .5s   
+  }
+  :root {
+    --background: white;
+    --text-primary: black;
+    --text-secondary: royalblue;
+    --accent: purple;
+  }
+  [data-theme='dark'] {
+    --background: rgb(37, 38, 43);
+    --text-primary: white;
+    --text-secondary: grey;
+    --accent: darkred;
+  }
