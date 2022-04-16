@@ -25,8 +25,7 @@
     "eject": "react-scripts eject",
     "dev": "concurrently -k \" npm start \" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
-    "electron-dev": "wait-on tcp:3000 && electron .",
-    "startLinux" : "concurrently -k \" npm start \" \"npm run electron-dev\""
+    "electron-dev": "electron .",
   },
   "eslintConfig": {
     "extends": [
