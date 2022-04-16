@@ -26,8 +26,6 @@ app.on('ready', function(){
     const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
     //Insert menu
     Menu.setApplicationMenu(mainMenu);
-    //Set initial theme
-    store.set("settings.theme",'light');
     mainWindow.webContents.on('did-finish-load',() =>{
         mainWindow.show();
         mainWindow.webContents.send("change-theme",store.get("settings.theme"));
