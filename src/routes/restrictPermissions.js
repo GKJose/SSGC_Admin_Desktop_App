@@ -1,5 +1,6 @@
 import './routes.css';
 import React from "react";
+import ClientsDropDownList from '../components/clientsDropDownList';
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -35,10 +36,11 @@ const ipcRenderer = electron.ipcRenderer;
 class restrictPermissions extends React.Component{
   constructor(props){
     super(props);
-   
+    this.state = {count:0};
   }
   render(){
     const clickedCheckBox = (e) =>{
+      this.setState(count => count + 1);
       switch(e.target.id){
         case "Functions":
           permissionsJSON.permissions.functionRestrictionsEnable = e.target.checked;
@@ -107,7 +109,8 @@ class restrictPermissions extends React.Component{
             </tr>
           </tbody>
           </table>
-          <button id = "submit" type = "button" onClick={(e)=>{sendPermissionsToClients(e)}}>Send Permissions to all Clients</button>
+          <ClientsDropDownList permissions = {permissionsJSON}></ClientsDropDownList>
+          <button id = "submitToAllClients" type = "button" onClick={(e)=>{sendPermissionsToClients(e)}}>Send Permissions to all Clients</button>
         </div>
       );
     }

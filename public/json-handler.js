@@ -10,6 +10,7 @@ const schema_connectionRevoke = require("../src/schemas/connectionRevoke.schema.
 const schema_ssgcData = require("../src/schemas/ssgcData.schema.json");
 const fs = require('fs');
 const {Buffer,Blob} = require('buffer');
+const { toHaveAccessibleDescription } = require("@testing-library/jest-dom/dist/matchers");
 const serverPort = 6969;
 const serverHost = '0.0.0.0';
 
@@ -27,14 +28,23 @@ class JsonHandler{
         this.ajv.addSchema(schema_connectionRevoke,"connectionRevoke");
         this.ajv.addSchema(schema_ssgcData,"ssgcData");
         this.clients = [];
+        this.majorVersion = 0;
+        this.minorVersion = 0;
+        this.bugFixVersion = 0;
+        this.adminInfoJSON = {
+            ssgcType:"adminInfo",
+            adminName:this.adminName,
+            adminExtra:" "
+        };
+
     }
 
     handleConnection(){
 
         this.wss.on("connection",(ws,req) =>{
-            dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A new calculator has connected!"});
             //Add new client to list of clients
-            this.clients.push(ws);
+            this.clients.push({ip:req.socket.remoteAddress,socket:ws});
+            ws.send(JSON.stringify(this.adminInfoJSON));
             ws.on("message", (msg) => {
                let jsonObject = JSON.parse(msg);
                //Check to see if its a client log
@@ -50,7 +60,15 @@ class JsonHandler{
                 
                 validate = this.ajv.getSchema("connectionRequest");
                 if(validate(jsonObject)){
-                    this.window.webContents.send("connectionRequest",jsonObject);
+                    console.log("connection request recieved!");
+                    if(!this.isSSGCCurrent(jsonObject)){
+                        console.log("not up to date!");
+                        ws.send(this.generateRevokeJSON("adminClientRemoval"));
+                        ws.close();
+                    }else{
+                        dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A new calculator has connected!"});
+                        this.window.webContents.send("connectionRequest",jsonObject);
+                    }
                 }
                 validate = this.ajv.getSchema("connectionRevoke");
                 if(validate(jsonObject)){
@@ -79,11 +97,40 @@ class JsonHandler{
         //Iterate through every client stored, and send them a message
         for(var i = 0; i < this.clients.length; i++){
             //Send them a message only if the client is actively open.
-            if(this.clients[i].readyState === websocket.OPEN ){
-                this.clients[i].send(JSON.stringify(jsonObject));
+            if(this.clients[i].socket.readyState === websocket.OPEN ){
+                this.clients[i].socket.send(JSON.stringify(jsonObject));
             }
         }
     }
-    
+    sendJSONToClient(clientIP,jsonObject){
+        for(var i = 0; i<this.clients.length;i++){
+            if(this.clients[i].ip == clientIP && this.clients[i].socket.readyState === websocket.OPEN  ){
+                this.clients[i].socket.send(JSON.stringify(jsonObject));
+            }
+        }
+    }
+    setAdminName(name){
+        this.adminInfoJSON.adminName = name;
+    }
+    setAdminDescription(description){
+        this.adminInfoJSON.adminExtra = description;
+    }
+    setSSGCVersion(version){
+       if(!version) return;
+       var versions = version.split(",");
+       this.majorVersion = versions[0];
+       this.minorVersion = versions[1];
+       this.bugFixVersion = versions[2];
+    }
+    isSSGCCurrent(jsonObject){
+        return jsonObject.clientVersion.major >= this.majorVersion && jsonObject.clientVersion.minor >= this.minorVersion && jsonObject.clientVersion.bugfix >= this.bugFixVersion;
+    }
+    generateRevokeJSON(reason){
+        return {
+            ssgcType:"adminRevoke",
+            revokeReason:reason
+        };
+    }
+  
 }
 module.exports = JsonHandler;

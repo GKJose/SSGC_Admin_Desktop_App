@@ -5,6 +5,7 @@ const path = require("path");
 const Store = require('electron-store');
 const prompt = require('electron-prompt');
 const JHandler = require("./json-handler");
+const { dialog } = require("electron");
 const {app, BrowserWindow,Menu,ipcMain} = electron;
 
 const store = new Store();
@@ -32,6 +33,9 @@ app.on('ready', function(){
     });
     jsonHandler = new JHandler(mainWindow);
     jsonHandler.handleConnection();
+    jsonHandler.setAdminName(store.get("admin.name"));
+    jsonHandler.setAdminDescription(store.get("admin.description"));
+    jsonHandler.setSSGCVersion(store.get("settings.SSGCVersion"));
 
 });
 
@@ -144,10 +148,60 @@ const mainMenuTemplate = [
   
                         } else {
                             store.set("admin.name",r);
+                            jsonHandler.setAdminName(store.get("admin.name"));
                         }
                     })
                     .catch(console.error);
                 }
+            },
+            {
+                label:"Set SSGC Version",
+                click(){
+                    prompt({
+                        title: 'Set SSGC Version (Major,Minor,BugFix)',
+                        label: 'Name:',
+                        value: store.get("settings.SSGCVersion"),
+                        inputAttrs: {
+                            type: 'text'
+                        },
+                        type: 'input'
+                    })
+                    .then((r) => {
+                        if(r !== null && r.split(",").length < 3) {
+                            dialog.showErrorBox("Error","Incorect input string.");
+                        }else if(r === null){
+                            
+                        }
+                        else {
+                            store.set("settings.SSGCVersion",r);
+                            jsonHandler.setSSGCVersion(store.get("settings.SSGCVersion"));
+                        }
+                    })
+                    .catch(console.error);
+                }
+            },
+            {
+                label:"Set admin description",
+                click(){
+                    prompt({
+                        title: 'Change Admin Description',
+                        label: 'Name:',
+                        value: store.get("admin.description"),
+                        inputAttrs: {
+                            type: 'text'
+                        },
+                        type: 'input'
+                    })
+                    .then((r) => {
+                        if(r === null) {
+  
+                        } else {
+                            store.set("admin.description",r);
+                            jsonHandler.setAdminDescription(store.get("admin.description"));
+                        }
+                    })
+                    .catch(console.error);
+                } 
             }
         ]
     },
@@ -184,6 +238,9 @@ const mainMenuTemplate = [
 ipcMain.on("sendPermissions",(event,data)=>{
     jsonHandler.sendJSONToClients(data);
 });
+ipcMain.on("sendPermissionsToClient",(event,data)=>{
+    jsonHandler.sendJSONToClient(data.clientIP,data.permissions);
+});
 //Toggle dev tools if in development
 if(process.env.NODE_ENV !== 'production'){
     mainMenuTemplate.push({
@@ -198,4 +255,3 @@ if(process.env.NODE_ENV !== 'production'){
         ]
     });
 }
-
