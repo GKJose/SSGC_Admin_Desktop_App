@@ -36,7 +36,7 @@ app.on('ready', function(){
     jsonHandler.setAdminName(store.get("admin.name"));
     jsonHandler.setAdminDescription(store.get("admin.description"));
     jsonHandler.setSSGCVersion(store.get("settings.SSGCVersion"));
-
+    
 });
 
 //Set the minimum/maximum size of the application
@@ -202,6 +202,12 @@ const mainMenuTemplate = [
                     })
                     .catch(console.error);
                 } 
+            },
+            {
+                label:"Load Permissions from Memory",
+                click(){
+                    mainWindow.webContents.send("initPermissions",store.get("settings.permissions"));
+                }
             }
         ]
     },
@@ -235,6 +241,11 @@ const mainMenuTemplate = [
         ]
     }
 ];
+ipcMain.on("savePermissions",(event,data)=>{
+    console.log("saving permissions..");
+    console.log(data);
+    store.set("settings.permissions",data);
+});
 ipcMain.on("sendPermissions",(event,data)=>{
     jsonHandler.sendJSONToClients(data);
 });

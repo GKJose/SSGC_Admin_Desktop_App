@@ -8,9 +8,6 @@ const schema_connectionPermissionReply = require("../src/schemas/connectionPermi
 const schema_connectionRequest = require("../src/schemas/connectionRequest.schema.json");
 const schema_connectionRevoke = require("../src/schemas/connectionRevoke.schema.json");
 const schema_ssgcData = require("../src/schemas/ssgcData.schema.json");
-const fs = require('fs');
-const {Buffer,Blob} = require('buffer');
-const { toHaveAccessibleDescription } = require("@testing-library/jest-dom/dist/matchers");
 const serverPort = 6969;
 const serverHost = '0.0.0.0';
 
@@ -61,7 +58,10 @@ class JsonHandler{
                 validate = this.ajv.getSchema("connectionRequest");
                 if(validate(jsonObject)){
                     console.log("connection request recieved!");
-                    if(!this.isSSGCCurrent(jsonObject)){
+                    if(jsonObject.ssgcType === "connectionInfo"){
+                        ws.send(JSON.stringify(this.adminInfoJSON));
+                    }
+                    else if(jsonObject.ssgcType === "connectionRequest" && !this.isSSGCCurrent(jsonObject)){
                         console.log("not up to date!");
                         ws.send(this.generateRevokeJSON("adminClientRemoval"));
                         ws.close();
