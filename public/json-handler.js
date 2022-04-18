@@ -1,7 +1,7 @@
 const websocket = require("ws");
 const Ajv = require("ajv")
 const addFormats = require("ajv-formats");
-const {dialog}= require('electron');
+const {dialog, ipcMain}= require('electron');
 const http = require("http");
 const schema_clientLog = require("../src/schemas/clientLog.schema.json");
 const schema_connectionPermissionReply = require("../src/schemas/connectionPermissionReply.schema.json");
@@ -33,6 +33,38 @@ class JsonHandler{
             adminName:this.adminName,
             adminExtra:" "
         };
+        this.permissions = {
+  
+            "ssgcType":"connectionPermissionReply",
+            "permissions":{
+                "functionRestrictionsEnable":false,
+                "graphingRestrictionsEnable":false,
+                "historyTrackingEnable":false,
+                "screenCaptureEnable":false,
+                "remoteConnectionEnable":false,
+                "settingOverrideEnable":false,
+                "payloadEnable":false
+            },
+            "functionWhitelist":[],
+            "graphingInfo":{
+                "graphingEnable":true,
+                "graphingWhitelist":[]
+            },
+            "calculationHistoryInfo":{
+                "historyTypes":[]
+            },
+            "screenCaptureInfo":{
+                "screenshotFrequency":1000,
+                "recordingEnable":false
+            },
+            "settingOverrideInfo":[],
+            "rejectionReason":""
+          
+          }
+        ipcMain.on("savePermissions",(event,data)=>{
+            console.log(data);
+            this.permissions = data;
+        });
 
     }
 
@@ -41,7 +73,6 @@ class JsonHandler{
         this.wss.on("connection",(ws,req) =>{
             //Add new client to list of clients
             this.clients.push({ip:req.socket.remoteAddress,socket:ws});
-            ws.send(JSON.stringify(this.adminInfoJSON));
             ws.on("message", (msg) => {
                let jsonObject = JSON.parse(msg);
                //Check to see if its a client log
@@ -52,7 +83,11 @@ class JsonHandler{
     
                 validate = this.ajv.getSchema("permissionReply");
                 if(validate(jsonObject)){
-                    this.window.webContents.send("permissionReply",jsonObject);
+                    if(jsonObject.ssgcType === "connectionPermissionAccept"){
+                        dialog.showMessageBox(this.window,{title:"Client Connection Info.",message:jsonObject.clientName+" has connected!"});
+                    }else{
+                        ws.close();
+                    }
                 }
                 
                 validate = this.ajv.getSchema("connectionRequest");
@@ -66,13 +101,13 @@ class JsonHandler{
                         ws.send(this.generateRevokeJSON("adminClientRemoval"));
                         ws.close();
                     }else{
-                        dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A new calculator has connected!"});
-                        this.window.webContents.send("connectionRequest",jsonObject);
+                        ws.send(JSON.stringify(this.permissions));
                     }
                 }
                 validate = this.ajv.getSchema("connectionRevoke");
                 if(validate(jsonObject)){
-                    this.window.webContents.send("connectionRevoke",jsonObject);
+                    dialog.showMessageBox(this.window,{title:"Client Information",message:jsonObject.clientName+" has disconnected!"});
+                    ws.close();
                 }
                 validate = this.ajv.getSchema("ssgcData");
                 if(validate(jsonObject)){
@@ -84,8 +119,6 @@ class JsonHandler{
             });
             // handling what to do when clients disconnects from server
             ws.on("close", () => {
-                dialog.showMessageBox(this.window,{type:"info",title:"Client Connection Info.",message:"A calculator has disconnected! IP:"});
-                this.window.webContents.send("clientDisconnected",req.socket.remoteAddress);
             });
             // handling client connection error
             ws.onerror = function (event) {
@@ -131,6 +164,12 @@ class JsonHandler{
             revokeReason:reason
         };
     }
-  
+    ejectAllClients(){
+        for(var i = 0; i < this.clients.length;i++){
+            this.clients[i].socket.send(JSON.stringify(this.generateRevokeJSON("adminSessionTermination")));
+            this.clients[i].socket.close();
+        }
+        this.clients = [];
+    }
 }
 module.exports = JsonHandler;

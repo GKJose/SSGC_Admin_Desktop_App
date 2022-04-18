@@ -23,5 +23,5 @@
         }
     },
     "type": "object",
-    "required": ["ssgcType", "revokeReason"]
+    "required": ["ssgcType", "revokeReason","clientIP","clientName"]
     }

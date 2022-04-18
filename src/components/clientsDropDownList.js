@@ -4,15 +4,15 @@ let children = [];
 ipcRenderer.on("connectionRequest",(event,data)=>{
   console.log(data);
   children.push(<option key ={data.clientIP} value = {data.clientIP}>{data.clientName}</option>);
-  //this.setState(prevState =>({
-   // clients:[...prevState.clients,data.clientIP]
-//}));
+  this.setState(prevState =>({
+    clients:[...prevState.clients,data.clientIP]
+}));
 });
 ipcRenderer.on("connectionRevoke",(event,data)=>{
 this.filterChildren(data.clientIP);
-//this.setState({clients:this.state.clients.filter((client)=>{
-  //  return client !==data.clientIP;
-//})});
+this.setState({clients:this.state.clients.filter((client)=>{
+   return client !==data.clientIP;
+})});
 });
 class ClientsDropDownList extends React.Component{
   constructor(props){

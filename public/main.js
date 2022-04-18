@@ -204,11 +204,11 @@ const mainMenuTemplate = [
                 } 
             },
             {
-                label:"Load Permissions from Memory",
+                label:"Eject all Clients",
                 click(){
-                    mainWindow.webContents.send("initPermissions",store.get("settings.permissions"));
+                    jsonHandler.ejectAllClients();
                 }
-            }
+            }   
         ]
     },
     {
@@ -241,11 +241,6 @@ const mainMenuTemplate = [
         ]
     }
 ];
-ipcMain.on("savePermissions",(event,data)=>{
-    console.log("saving permissions..");
-    console.log(data);
-    store.set("settings.permissions",data);
-});
 ipcMain.on("sendPermissions",(event,data)=>{
     jsonHandler.sendJSONToClients(data);
 });

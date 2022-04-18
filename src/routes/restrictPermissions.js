@@ -36,6 +36,7 @@ class restrictPermissions extends React.Component{
       "rejectionReason":""
     
     }
+    ipcRenderer.send("savePermissions",this.permissionsJSON);
   }
   render(){
     const clickedCheckBox = (e) =>{
@@ -63,17 +64,11 @@ class restrictPermissions extends React.Component{
           this.permissionsJSON.permissions.payloadEnable = e.target.checked;
           break;
       }
-      savePermissionsToMemory(e);
-    };
-    const sendPermissionsToClients = (e) =>{
-      ipcRenderer.send("sendPermissions",this.permissionsJSON);
-      
-    };
-    const savePermissionsToMemory = (e)=>{
       ipcRenderer.send("savePermissions",this.permissionsJSON);
-    }
+      
+    }; 
     return (
-        <div className='gettingStarted' data-theme ={this.props.theme}>
+        <div className='restrictPermissions' data-theme ={this.props.theme}>
           <h2>Restrict Permissions</h2>
           <table>
             <thead>
@@ -112,8 +107,6 @@ class restrictPermissions extends React.Component{
             </tr>
           </tbody>
           </table>
-          <ClientsDropDownList permissions = {this.permissionsJSON}></ClientsDropDownList>
-          <button id = "submitToAllClients" type = "button" onClick={(e)=>{sendPermissionsToClients(e)}}>Send Permissions to all Clients</button>
         </div>
       );
     }
