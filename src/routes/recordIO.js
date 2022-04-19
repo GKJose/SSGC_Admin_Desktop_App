@@ -47,6 +47,7 @@ class RecordIO extends React.Component {
     return (
         <div className='recordIO' data-theme ={this.props.theme}>
           <h2>Record I/O</h2>
+          <hr></hr>
           <table id="table" align = "center" border="1px"></table>
         </div>
       );

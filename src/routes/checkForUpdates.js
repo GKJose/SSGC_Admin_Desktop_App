@@ -19,6 +19,7 @@ class checkForUpdates extends React.Component{
     return(
       <div className="checkForUpdates" data-theme ={this.props.theme}>
           <h2>Updates</h2>
+          <hr></hr>
         </div>
       );
   }

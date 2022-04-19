@@ -20,11 +20,11 @@ function App(props){
           </p>
           <a
             className="App-link"
-            href="https://github.com/UHCL-Senior-Projects"
+            href="https://reactjs.org/tutorial/tutorial.html"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Click here to visit our Github Repo
+            Learn React
           </a>
         </header>
       </div>

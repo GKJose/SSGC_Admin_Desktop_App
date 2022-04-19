@@ -80,3 +80,6 @@
     --text-secondary: grey;
     --accent: darkred;
   }
+  li{
+    text-align: left;
+  }

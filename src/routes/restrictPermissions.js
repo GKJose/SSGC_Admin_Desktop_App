@@ -70,6 +70,7 @@ class restrictPermissions extends React.Component{
     return (
         <div className='restrictPermissions' data-theme ={this.props.theme}>
           <h2>Restrict Permissions</h2>
+          <hr></hr>
           <table>
             <thead>
               <tr>
