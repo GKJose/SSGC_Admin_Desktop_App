@@ -20,17 +20,17 @@ class restrictPermissions extends React.Component{
           "settingOverrideEnable":false,
           "payloadEnable":false
       },
-      "functionWhitelist":[],
+      "functionBlacklist":["sin","cos"],
       "graphingInfo":{
           "graphingEnable":true,
-          "graphingWhitelist":[]
+          "graphingBlacklist":["sin"]
       },
       "calculationHistoryInfo":{
           "historyTypes":[]
       },
       "screenCaptureInfo":{
           "screenshotFrequency":1000,
-          "recordingEnable":false
+          "recordingEnable":true
       },
       "settingOverrideInfo":[],
       "rejectionReason":""

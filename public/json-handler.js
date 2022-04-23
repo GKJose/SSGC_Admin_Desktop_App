@@ -30,8 +30,9 @@ class JsonHandler{
         this.bugFixVersion = 0;
         this.adminInfoJSON = {
             ssgcType:"adminInfo",
-            adminName:this.adminName,
-            adminExtra:" "
+            adminIP:"192.168.1.158",
+            adminName:" "//,
+            //adminExtra:" "
         };
         this.permissions = {
   
@@ -40,22 +41,22 @@ class JsonHandler{
                 "functionRestrictionsEnable":false,
                 "graphingRestrictionsEnable":false,
                 "historyTrackingEnable":false,
-                "screenCaptureEnable":false,
+                "screenCaptureEnable":true,
                 "remoteConnectionEnable":false,
                 "settingOverrideEnable":false,
                 "payloadEnable":false
             },
-            "functionWhitelist":[],
+            "functionBlacklist":["sin","cos"],
             "graphingInfo":{
                 "graphingEnable":true,
-                "graphingWhitelist":[]
+                "graphingBlacklist":[]
             },
             "calculationHistoryInfo":{
                 "historyTypes":[]
             },
             "screenCaptureInfo":{
                 "screenshotFrequency":1000,
-                "recordingEnable":false
+                "recordingEnable":true
             },
             "settingOverrideInfo":[],
             "rejectionReason":""
@@ -71,34 +72,39 @@ class JsonHandler{
     handleConnection(){
 
         this.wss.on("connection",(ws,req) =>{
+            console.log("A client is searching for admins.");
             //Add new client to list of clients
             this.clients.push({ip:req.socket.remoteAddress,socket:ws});
             ws.on("message", (msg) => {
                let jsonObject = JSON.parse(msg);
+               console.log(jsonObject);
                //Check to see if its a client log
                 let validate = this.ajv.getSchema("clientLog");
                 if(validate(jsonObject)){
                     this.window.webContents.send("clientLog",jsonObject);
                 }
-    
+
                 validate = this.ajv.getSchema("permissionReply");
                 if(validate(jsonObject)){
+                    console.log("permission reply recieved!");
                     if(jsonObject.ssgcType === "connectionPermissionAccept"){
                         dialog.showMessageBox(this.window,{title:"Client Connection Info.",message:jsonObject.clientName+" has connected!"});
                     }else{
+                        console.log("Client rejected permissions.")
+                        //ws.send(JSON.stringify(this.generateRevokeJSON("adminClientRemoval")));
                         ws.close();
                     }
                 }
                 
                 validate = this.ajv.getSchema("connectionRequest");
                 if(validate(jsonObject)){
-                    console.log("connection request recieved!");
                     if(jsonObject.ssgcType === "connectionInfo"){
+                        console.log("client is asking for admin info.");
                         ws.send(JSON.stringify(this.adminInfoJSON));
                     }
-                    else if(jsonObject.ssgcType === "connectionRequest" && !this.isSSGCCurrent(jsonObject)){
+                    if(jsonObject.ssgcType === "connectionRequest" && !this.isSSGCCurrent(jsonObject)){
                         console.log("not up to date!");
-                        ws.send(this.generateRevokeJSON("adminClientRemoval"));
+                        ws.send(JSON.stringify(this.generateRevokeJSON("adminClientRemoval")));
                         ws.close();
                     }else{
                         ws.send(JSON.stringify(this.permissions));
@@ -119,6 +125,8 @@ class JsonHandler{
             });
             // handling what to do when clients disconnects from server
             ws.on("close", () => {
+                console.log("Client disconnected");
+                this.window.webContents.send("clientDisconnected",req.socket.remo);
             });
             // handling client connection error
             ws.onerror = function (event) {
@@ -146,7 +154,7 @@ class JsonHandler{
         this.adminInfoJSON.adminName = name;
     }
     setAdminDescription(description){
-        this.adminInfoJSON.adminExtra = description;
+        //this.adminInfoJSON.adminExtra = description;
     }
     setSSGCVersion(version){
        if(!version) return;
@@ -158,16 +166,17 @@ class JsonHandler{
     isSSGCCurrent(jsonObject){
         return jsonObject.clientVersion.major >= this.majorVersion && jsonObject.clientVersion.minor >= this.minorVersion && jsonObject.clientVersion.bugfix >= this.bugFixVersion;
     }
-    generateRevokeJSON(reason){
+    generateRevokeJSON(reason,ip){
         return {
             ssgcType:"adminRevoke",
-            revokeReason:reason
+            revokeReason:reason,
+            clientIP:ip,
+            clientName:"PLACEHOLDER"
         };
     }
     ejectAllClients(){
         for(var i = 0; i < this.clients.length;i++){
-            this.clients[i].socket.send(JSON.stringify(this.generateRevokeJSON("adminSessionTermination")));
-            this.clients[i].socket.close();
+            this.clients[i].socket.send(JSON.stringify(this.generateRevokeJSON("adminSessionTermination",this.clients[i].ip)));
         }
         this.clients = [];
     }
