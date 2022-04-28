@@ -49,7 +49,7 @@ class JsonHandler{
             "functionBlacklist":["sin","cos"],
             "graphingInfo":{
                 "graphingEnable":true,
-                "graphingBlacklist":[]
+                "graphingBlacklist":["sin","cos"]
             },
             "calculationHistoryInfo":{
                 "historyTypes":[]
@@ -77,7 +77,6 @@ class JsonHandler{
             this.clients.push({ip:req.socket.remoteAddress,socket:ws});
             ws.on("message", (msg) => {
                let jsonObject = JSON.parse(msg);
-               console.log(jsonObject);
                //Check to see if its a client log
                 let validate = this.ajv.getSchema("clientLog");
                 if(validate(jsonObject)){
@@ -88,7 +87,6 @@ class JsonHandler{
                 if(validate(jsonObject)){
                     console.log("permission reply recieved!");
                     if(jsonObject.ssgcType === "connectionPermissionAccept"){
-                        dialog.showMessageBox(this.window,{title:"Client Connection Info.",message:jsonObject.clientName+" has connected!"});
                     }else{
                         console.log("Client rejected permissions.")
                         //ws.send(JSON.stringify(this.generateRevokeJSON("adminClientRemoval")));
@@ -105,14 +103,14 @@ class JsonHandler{
                     if(jsonObject.ssgcType === "connectionRequest" && !this.isSSGCCurrent(jsonObject)){
                         console.log("not up to date!");
                         ws.send(JSON.stringify(this.generateRevokeJSON("adminClientRemoval")));
-                        ws.close();
+                        //ws.close();
                     }else{
                         ws.send(JSON.stringify(this.permissions));
                     }
                 }
                 validate = this.ajv.getSchema("connectionRevoke");
                 if(validate(jsonObject)){
-                    dialog.showMessageBox(this.window,{title:"Client Information",message:jsonObject.clientName+" has disconnected!"});
+                    console.log(jsonObject);
                     ws.close();
                 }
                 validate = this.ajv.getSchema("ssgcData");
@@ -126,7 +124,7 @@ class JsonHandler{
             // handling what to do when clients disconnects from server
             ws.on("close", () => {
                 console.log("Client disconnected");
-                this.window.webContents.send("clientDisconnected",req.socket.remo);
+                this.window.webContents.send("clientDisconnected",req.socket.remoteAddress);
             });
             // handling client connection error
             ws.onerror = function (event) {

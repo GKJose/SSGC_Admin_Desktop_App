@@ -23,7 +23,7 @@ class restrictPermissions extends React.Component{
       "functionBlacklist":["sin","cos"],
       "graphingInfo":{
           "graphingEnable":true,
-          "graphingBlacklist":["sin"]
+          "graphingBlacklist":["sin","cos"]
       },
       "calculationHistoryInfo":{
           "historyTypes":[]
